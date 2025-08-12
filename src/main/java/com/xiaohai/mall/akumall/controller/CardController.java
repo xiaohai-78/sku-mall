@@ -26,6 +26,18 @@ public class CardController {
     @Autowired
     private InMemoryDataStore dataStore; // For SKU count
 
+    /**
+     * 获取点卡列表，支持筛选和分页。
+     * GET /api/cards
+     * @param name 点卡名称 (可选，模糊匹配)
+     * @param code 点卡编号 (可选，模糊匹配)
+     * @param status 点卡状态 ("on"或"off"，可选)
+     * @param dateFrom 有效期开始日期 (YYYY-MM-DD，可选)
+     * @param dateTo 有效期结束日期 (YYYY-MM-DD，可选)
+     * @param page 页码 (默认1)
+     * @param pageSize 每页大小 (默认10)
+     * @return 包含点卡列表和总数的响应对象
+     */
     @GetMapping
     public GlobalResponse<ListResponse<CardService.CardDTO>> getCards(
             @RequestParam(required = false) String name,
@@ -54,6 +66,12 @@ public class CardController {
         return new GlobalResponse<>(new ListResponse<>(cardDTOs, total));
     }
 
+    /**
+     * 创建新点卡。
+     * POST /api/cards
+     * @param card 点卡对象，包含名称、编号、面值、价格、状态、有效期等信息。
+     * @return 包含创建成功的点卡信息的响应对象。
+     */
     @PostMapping
     public GlobalResponse<Card> createCard(@RequestBody Card card) {
         logger.info("POST /api/cards - Card: {}", card);
@@ -61,6 +79,13 @@ public class CardController {
         return new GlobalResponse<>(createdCard);
     }
 
+    /**
+     * 更新现有接口。
+     * PUT /api/cards/{id}
+     * @param id 点卡ID
+     * @param card 包含要更新字段的点卡对象
+     * @return 包含更新后的点卡信息的响应对象；如果点卡不存在，返回404错误。
+     */
     @PutMapping("/{id}")
     public GlobalResponse<Card> updateCard(@PathVariable Long id, @RequestBody Card card) {
         logger.info("PUT /api/cards/{} - Card: {}", id, card);
@@ -69,12 +94,18 @@ public class CardController {
                 .orElseGet(() -> new GlobalResponse<>(404, "Card not found", null));
     }
 
+    /**
+     * 删除点卡。
+     * DELETE /api/cards/{id}
+     * @param id 点卡ID
+     * @return 空响应对象表示成功；如果点卡不存在，返回404错误。
+     */
     @DeleteMapping("/{id}")
     public GlobalResponse<Void> deleteCard(@PathVariable Long id) {
         logger.info("DELETE /api/cards/{}", id);
         boolean deleted = cardService.deleteCard(id);
         if (deleted) {
-            // Also remove SKUs associated with this card
+            // Also remove SKUs associated with this card (for in-memory simplicity)
             dataStore.getCardSkus().remove(cardService.getCardById(id).map(Card::getCode).orElse("INVALID"));
             return new GlobalResponse<>(null);
         } else {
@@ -82,6 +113,13 @@ public class CardController {
         }
     }
 
+    /**
+     * 更新点卡状态 (上架/下架)。
+     * PATCH /api/cards/{id}/status
+     * @param id 点卡ID
+     * @param card 包含新状态的Card对象 (status字段)
+     * @return 包含更新后的点卡信息的响应对象；如果点卡不存在，返回404错误。
+     */
     @PatchMapping("/{id}/status")
     public GlobalResponse<Card> updateCardStatus(@PathVariable Long id, @RequestBody Card card) {
         logger.info("PATCH /api/cards/{}/status - Status: {}", id, card.getStatus());

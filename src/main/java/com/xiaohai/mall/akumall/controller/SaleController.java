@@ -21,6 +21,12 @@ public class SaleController {
     @Autowired
     private SaleService saleService;
 
+    /**
+     * 销售点卡并获取 SKU 密钥。
+     * POST /api/sales
+     * @param request 包含 "cardCode" (要销售的点卡编号) 的请求体。
+     * @return 成功返回销售结果 (包括点卡名称、编号、SKU密钥、订单ID和成交时间)；库存不足或点卡不存在时返回错误信息。
+     */
     @PostMapping
     public GlobalResponse<SaleService.SaleResult> sellCard(@RequestBody Map<String, String> request) {
         String cardCode = request.get("cardCode");

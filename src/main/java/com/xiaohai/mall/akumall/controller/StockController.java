@@ -21,6 +21,12 @@ public class StockController {
     @Autowired
     private StockService stockService;
 
+    /**
+     * 添加点卡库存 (SKU 密钥)。
+     * POST /api/stock
+     * @param request 包含 "cardCode" (点卡编号) 和 "skuKey" (SKU 密钥) 的请求体。
+     * @return 成功返回消息；如果点卡编号不存在或 SKU 密钥已存在，返回错误信息。
+     */
     @PostMapping
     public GlobalResponse<Map<String, String>> addStock(@RequestBody Map<String, String> request) {
         String cardCode = request.get("cardCode");

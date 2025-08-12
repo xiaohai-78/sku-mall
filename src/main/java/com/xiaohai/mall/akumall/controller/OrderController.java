@@ -23,6 +23,18 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    /**
+     * 获取订单列表，支持筛选和分页。
+     * GET /api/orders
+     * @param orderId 订单ID (可选，模糊匹配)
+     * @param cardName 点卡名称 (可选，模糊匹配)
+     * @param cardCode 点卡编号 (可选，模糊匹配)
+     * @param dateFrom 成交时间开始日期 (YYYY-MM-DD，可选)
+     * @param dateTo 成交时间结束日期 (YYYY-MM-DD，可选)
+     * @param page 页码 (默认1)
+     * @param pageSize 每页大小 (默认10)
+     * @return 包含订单列表和总数的响应对象。
+     */
     @GetMapping
     public GlobalResponse<ListResponse<Order>> getOrders(
             @RequestParam(required = false) String orderId,
