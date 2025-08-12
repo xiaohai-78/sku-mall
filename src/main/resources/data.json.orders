@@ -1,0 +1,23 @@
+[
+  {
+    "id": 101,
+    "orderId": "ORD-20240101-001",
+    "dealTime": "2024-01-01 10:30:00",
+    "cardName": "点卡-1",
+    "cardCode": "CARD-1001"
+  },
+  {
+    "id": 102,
+    "orderId": "ORD-20240102-002",
+    "dealTime": "2024-01-02 11:30:00",
+    "cardName": "点卡-2",
+    "cardCode": "CARD-1002"
+  },
+  {
+    "id": 103,
+    "orderId": "ORD-20240103-003",
+    "dealTime": "2024-01-03 12:30:00",
+    "cardName": "点卡-3",
+    "cardCode": "CARD-1003"
+  }
+] 
